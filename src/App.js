@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import mailSvg from "./assets/mail.svg";
+import manSvg from "./assets/man.svg";
 import womanSvg from "./assets/woman.svg";
+import manAgeSvg from "./assets/growing-up-man.svg";
 import womanAgeSvg from "./assets/growing-up-woman.svg";
 import mapSvg from "./assets/map.svg";
 import phoneSvg from "./assets/phone.svg";
@@ -11,10 +13,12 @@ import Footer from "./components/footer/Footer";
 
 const url = "https://randomuser.me/api/";
 const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
+
 function App() {
   const [userData, setUserData] = useState(null);
   const [userInfo, setUserInfo] = useState([]);
   const [addUserInfo, setAddUserInfo] = useState([]);
+
   const getRandomUser = async () => {
     await axios
       .get(url)
@@ -23,22 +27,22 @@ function App() {
         setUserData(res.data.results[0]);
         setUserInfo({
           title: "My name is",
-          info: `${userData.name.first} ${userData.name.last}`,
+          info: `${res.data.results[0].name.first} ${res.data.results[0].name.last}`,
         });
       })
       .catch((err) => console.log(err));
   };
+
   useEffect(() => {
     getRandomUser();
   }, []);
 
-  //get info Section
-
+  // Get Info Section
   const getInfo = (hover) => {
     switch (hover) {
       case "profile":
         setUserInfo({
-          title: "My name is ",
+          title: "My name is",
           info: `${userData.name.first} ${userData.name.last}`,
         });
         break;
@@ -76,18 +80,20 @@ function App() {
         break;
     }
   };
+  // Get Info Section is Done
 
-  //get info section is done
-  //adduserinfo
+  // Add User Info
   const handleAddUser = () => {
     const newUser = {
       firstName: userData.name.first,
       email: userData.email,
-      phone: userData.phone,
+      tel: userData.phone,
       age: userData.dob.age,
     };
+    console.log(addUserInfo);
+    setAddUserInfo([...addUserInfo, newUser]);
   };
-
+  // Add User Info is done
   return (
     <main>
       {userData && (
@@ -95,15 +101,18 @@ function App() {
           <div className="block bcg-orange">
             <img src={cwSvg} alt="cw" id="cw" />
           </div>
+          {/*  */}
           <div className="block">
             <div className="container">
               <img
-                src={userData.picture.large}
+                src={
+                  userData.picture.large ? userData.picture.large : defaultImage
+                }
                 alt="random user"
                 className="user-img"
               />
               <p className="user-title">
-                {userInfo !== [] ? userInfo.title : "My name is"}
+                {userInfo !== [] ? userInfo.title : `My name is`}
               </p>
               <p className="user-value">
                 {userInfo !== []
@@ -181,18 +190,22 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="body-tr">
-                    {addUserInfo !== [] ? (
-                      <>
-                        <th className="th">{addUserInfo.firstName}</th>
-                        <th className="th">{addUserInfo.email}</th>
-                        <th className="th">{addUserInfo.phone}</th>
-                        <th className="th">{addUserInfo.age}</th>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                  </tr>
+                  {addUserInfo === [] ? (
+                    ""
+                  ) : (
+                    <>
+                      {addUserInfo.map((item, idx) => (
+                        <>
+                          <tr className="body-tr" key={idx}>
+                            <th className="th">{item.firstName}</th>
+                            <th className="th">{item.email}</th>
+                            <th className="th">{item.tel}</th>
+                            <th className="th">{item.age}</th>
+                          </tr>
+                        </>
+                      ))}
+                    </>
+                  )}
                 </tbody>
               </table>
             </div>
