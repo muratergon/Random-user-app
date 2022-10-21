@@ -14,6 +14,7 @@ const defaultImage = "https://randomuser.me/api/portraits/men/75.jpg";
 function App() {
   const [userData, setUserData] = useState(null);
   const [userInfo, setUserInfo] = useState([]);
+  const [addUserInfo, setAddUserInfo] = useState([]);
   const getRandomUser = async () => {
     await axios
       .get(url)
@@ -77,6 +78,15 @@ function App() {
   };
 
   //get info section is done
+  //adduserinfo
+  const handleAddUser = () => {
+    const newUser = {
+      firstName: userData.name.first,
+      email: userData.email,
+      phone: userData.phone,
+      age: userData.dob.age,
+    };
+  };
 
   return (
     <main>
@@ -152,7 +162,11 @@ function App() {
                 >
                   new user
                 </button>
-                <button className="btn" type="button">
+                <button
+                  className="btn"
+                  type="button"
+                  onClick={() => handleAddUser()}
+                >
                   add user
                 </button>
               </div>
@@ -167,7 +181,18 @@ function App() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="body-tr"></tr>
+                  <tr className="body-tr">
+                    {addUserInfo !== [] ? (
+                      <>
+                        <th className="th">{addUserInfo.firstName}</th>
+                        <th className="th">{addUserInfo.email}</th>
+                        <th className="th">{addUserInfo.phone}</th>
+                        <th className="th">{addUserInfo.age}</th>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </tr>
                 </tbody>
               </table>
             </div>
