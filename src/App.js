@@ -18,6 +18,7 @@ function App() {
   const [userData, setUserData] = useState(null);
   const [userInfo, setUserInfo] = useState([]);
   const [addUserInfo, setAddUserInfo] = useState([]);
+  const [isClicked, setIsClicked] = useState(false);
 
   const getRandomUser = async () => {
     await axios
@@ -29,6 +30,7 @@ function App() {
           title: "My name is",
           info: `${res.data.results[0].name.first} ${res.data.results[0].name.last}`,
         });
+        setIsClicked(false);
       })
       .catch((err) => console.log(err));
   };
@@ -48,7 +50,7 @@ function App() {
         break;
       case "email":
         setUserInfo({
-          title: "My email is",
+          title: "Mail Adress",
           info: userData.email,
         });
         break;
@@ -60,7 +62,7 @@ function App() {
         break;
       case "location":
         setUserInfo({
-          title: "My location is",
+          title: "I live in",
           info: `${userData.location.city} - ${userData.location.country}`,
         });
         break;
@@ -72,7 +74,7 @@ function App() {
         break;
       case "password":
         setUserInfo({
-          title: "My password is",
+          title: "My favorite password is",
           info: userData.login.password,
         });
         break;
@@ -83,15 +85,15 @@ function App() {
   // Get Info Section is Done
 
   // Add User Info
-  const handleAddUser = () => {
+  const handleAddUser = (name) => {
     const newUser = {
       firstName: userData.name.first,
       email: userData.email,
       tel: userData.phone,
       age: userData.dob.age,
     };
-    console.log(addUserInfo);
     setAddUserInfo([...addUserInfo, newUser]);
+    setIsClicked(true);
   };
   // Add User Info is done
   return (
@@ -125,7 +127,11 @@ function App() {
                   data-label="name"
                   onMouseEnter={() => getInfo("profile")}
                 >
-                  <img src={womanSvg} alt="user" id="iconImg" />
+                  <img
+                    src={userData.gender === "female" ? womanSvg : manSvg}
+                    alt="user"
+                    id="iconImg"
+                  />
                 </button>
                 <button
                   className="icon"
@@ -139,7 +145,11 @@ function App() {
                   data-label="age"
                   onMouseEnter={() => getInfo("age")}
                 >
-                  <img src={womanAgeSvg} alt="age" id="iconImg" />
+                  <img
+                    src={userData.gender === "female" ? womanAgeSvg : manAgeSvg}
+                    alt="age"
+                    id="iconImg"
+                  />
                 </button>
                 <button
                   className="icon"
@@ -174,7 +184,8 @@ function App() {
                 <button
                   className="btn"
                   type="button"
-                  onClick={() => handleAddUser()}
+                  onClick={() => handleAddUser(userData.name.first)}
+                  disabled={isClicked && "disabled"}
                 >
                   add user
                 </button>
@@ -195,14 +206,12 @@ function App() {
                   ) : (
                     <>
                       {addUserInfo.map((item, idx) => (
-                        <>
-                          <tr className="body-tr" key={idx}>
-                            <th className="th">{item.firstName}</th>
-                            <th className="th">{item.email}</th>
-                            <th className="th">{item.tel}</th>
-                            <th className="th">{item.age}</th>
-                          </tr>
-                        </>
+                        <tr className="body-tr" key={idx}>
+                          <th className="th">{item.firstName}</th>
+                          <th className="th">{item.email}</th>
+                          <th className="th">{item.tel}</th>
+                          <th className="th">{item.age}</th>
+                        </tr>
                       ))}
                     </>
                   )}
